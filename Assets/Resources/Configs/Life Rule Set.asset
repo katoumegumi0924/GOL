@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d9e1b902a1b724e83f0ec19bfd68fb, type: 3}
+  m_Name: Life Rule Set
+  m_EditorClassIdentifier: 
+  lifeaRules:
+  - {fileID: 11400000, guid: c705f52563778924a8cf21c218aa59db, type: 2}
+  - {fileID: 11400000, guid: 48fd6b8bb857957428b926604c24ca80, type: 2}
+  - {fileID: 11400000, guid: f3248ce73c6b590439a5dc511ae6bf88, type: 2}
+  - {fileID: 11400000, guid: 449ed4b621268c84f83a6b6f4390def1, type: 2}
+  - {fileID: 11400000, guid: f7768d7c83a11394f84285c9d2accba8, type: 2}
+  - {fileID: 11400000, guid: 4747e92af9f154c40a6364b7a1ac731c, type: 2}
