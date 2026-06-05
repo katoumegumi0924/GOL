@@ -12,13 +12,11 @@ public class UISaveInput : ManualBehavior
     protected override void _OnOpen()
     {
         GameMain.instance.data.lifeTime.Pause();
-        UIRoot.instance.uiGame.uiSettingMenu.TogglePlayBtnIcon();
     }
 
     protected override void _OnClose()
     {
         GameMain.instance.data.lifeTime.Resume();
-        UIRoot.instance.uiGame.uiSettingMenu.TogglePlayBtnIcon();
     }
 
     protected override void _OnRegEvent()

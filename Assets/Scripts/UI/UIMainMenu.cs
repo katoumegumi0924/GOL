@@ -42,12 +42,14 @@ public class UIMainMenu : ManualBehavior
     {
         newGameBtn.onClick += OnNewGameBtnClick;
         continueBtn.onClick += OnContinueBtnClick;
+        exitBtn.onClick += OnExitBtnClick;
     }
 
     protected override void _OnUnregEvent()
     {
         newGameBtn.onClick -= OnNewGameBtnClick;
         continueBtn.onClick -= OnContinueBtnClick;
+        exitBtn.onClick -= OnExitBtnClick;
     }
 
     protected override void _OnOpen()

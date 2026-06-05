@@ -31,10 +31,16 @@ public class UIRoot : ManualBehavior
 
     protected override bool _OnInit()
     {
-        uiGame._Init(gameMain);
         uiMainMenu._Init(null);
-
+        uiGame._Init(gameMain);
+        
         return true;
+    }
+
+    protected override void _OnFree()
+    {
+        uiMainMenu._Free();
+        uiGame._Free();
     }
 
     protected override void _OnOpen()
@@ -47,12 +53,6 @@ public class UIRoot : ManualBehavior
     {
         uiMainMenu._Close();
         uiGame._Close();
-    }
-
-    protected override void _OnFree()
-    {
-        uiGame._Free();
-        uiMainMenu._Free();
     }
 
     protected override void _OnUpdate()

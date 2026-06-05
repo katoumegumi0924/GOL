@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// TimeData：
@@ -10,8 +11,9 @@ public class TimeData
     // 每秒50帧，singleStepTick单次迭代所需的tick设置为50，当tickDelta为1时1秒迭代一次
     private readonly static int[] tickDeltaSteps = { 1, 2, 10, 20, 50 };
     private int tickDeltaIndex;
-    public bool pausing;
     public int tickDelta { get { return pausing ? 0 : tickDeltaSteps[tickDeltaIndex]; } }
+    public bool pausing { get; private set; }
+    public event Action<bool> OnPauseStateChanged;
 
     public void Init()
     {
@@ -65,12 +67,18 @@ public class TimeData
 
     public void Pause()
     {
+        if (pausing)
+            return;
         pausing = true;
+        OnPauseStateChanged?.Invoke(pausing);
     }
 
     public void Resume()
     {
+        if (!pausing)
+            return;
         pausing = false;
+        OnPauseStateChanged?.Invoke(pausing);
     }
 
     public void TogglePause()

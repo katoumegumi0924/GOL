@@ -23,7 +23,6 @@ public class UISettingMenu : ManualBehavior
     public Text playText;
 
     private bool gridToggle;
-    private bool playIconToggle;
 
     private Image playButtonImg;
     private Sprite playSprite;
@@ -61,6 +60,8 @@ public class UISettingMenu : ManualBehavior
 
     protected override void _OnFree()
     {
+        gameMain = null;
+
         saveinputWindow._Free();
 
         playButtonImg = null;
@@ -102,11 +103,13 @@ public class UISettingMenu : ManualBehavior
         lifeLogic = gameMain.logic.lifeLogic;
         lifeRenderer = gameMain.model.lifeRenderer;
 
-        TogglePlayBtnIcon();
+        lifeTime.OnPauseStateChanged += UpdatePlayBtnIcon;
     }
 
     protected override void _OnClose()
     {
+        lifeTime.OnPauseStateChanged -= UpdatePlayBtnIcon;
+
         lifeTime = null;
         lifeLogic = null;
         lifeRenderer = null;
@@ -121,12 +124,11 @@ public class UISettingMenu : ManualBehavior
     private void OnClickPlayButton(int data)
     {
         lifeTime.TogglePause();
-        TogglePlayBtnIcon();
     }
 
-    public void TogglePlayBtnIcon()
+    public void UpdatePlayBtnIcon(bool isPaused)
     {
-        if (lifeTime.pausing)
+        if (isPaused)
         {
             playButtonImg.sprite = playSprite;
             playText.text = "play";
@@ -141,7 +143,6 @@ public class UISettingMenu : ManualBehavior
     private void OnClickStepForwardButton(int data)
     {
         lifeTime.Pause();
-        TogglePlayBtnIcon();
         lifeLogic.LifeTick();
     }
 
@@ -153,14 +154,12 @@ public class UISettingMenu : ManualBehavior
     private void OnClickSpeedUpButton(int data)
     {
         lifeTime.Resume();
-        TogglePlayBtnIcon();
         lifeTime.SpeedUp();
     }
 
     private void OnClickSlowDownButton(int data)
     {
         lifeTime.Resume();
-        TogglePlayBtnIcon();
         lifeTime.SlowDown();
     }
 
