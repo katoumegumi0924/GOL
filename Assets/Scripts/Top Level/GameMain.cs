@@ -74,7 +74,7 @@ public class GameMain : MonoBehaviour
 
     private void LateUpdate()
     {
-        
+        logic.LateUpdate();
     }
 
     private void OnEnable()

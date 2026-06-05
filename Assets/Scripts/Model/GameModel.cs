@@ -21,6 +21,9 @@ public class GameModel
 
     public void Free()
     {
+        gameData = null;
+        gameLogic = null;
+
         if (lifeRenderer != null)
         {
             lifeRenderer.Free();

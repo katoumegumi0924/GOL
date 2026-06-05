@@ -102,9 +102,7 @@ public class UISettingMenu : ManualBehavior
         lifeLogic = gameMain.logic.lifeLogic;
         lifeRenderer = gameMain.model.lifeRenderer;
 
-        // 重置playButton显示状态
-        playButtonImg.sprite = pauseSprite;
-        playText.text = "pause";
+        TogglePlayBtnIcon();
     }
 
     protected override void _OnClose()
@@ -126,9 +124,9 @@ public class UISettingMenu : ManualBehavior
         TogglePlayBtnIcon();
     }
 
-    private void TogglePlayBtnIcon()
+    public void TogglePlayBtnIcon()
     {
-        if (!playIconToggle)
+        if (lifeTime.pausing)
         {
             playButtonImg.sprite = playSprite;
             playText.text = "play";
@@ -138,13 +136,12 @@ public class UISettingMenu : ManualBehavior
             playButtonImg.sprite = pauseSprite;
             playText.text = "pause";
         }
-
-        playIconToggle = !playIconToggle;
     }
 
     private void OnClickStepForwardButton(int data)
     {
         lifeTime.Pause();
+        TogglePlayBtnIcon();
         lifeLogic.LifeTick();
     }
 
@@ -156,12 +153,14 @@ public class UISettingMenu : ManualBehavior
     private void OnClickSpeedUpButton(int data)
     {
         lifeTime.Resume();
+        TogglePlayBtnIcon();
         lifeTime.SpeedUp();
     }
 
     private void OnClickSlowDownButton(int data)
     {
         lifeTime.Resume();
+        TogglePlayBtnIcon();
         lifeTime.SlowDown();
     }
 

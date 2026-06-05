@@ -12,11 +12,13 @@ public class UISaveInput : ManualBehavior
     protected override void _OnOpen()
     {
         GameMain.instance.data.lifeTime.Pause();
+        UIRoot.instance.uiGame.uiSettingMenu.TogglePlayBtnIcon();
     }
 
     protected override void _OnClose()
     {
         GameMain.instance.data.lifeTime.Resume();
+        UIRoot.instance.uiGame.uiSettingMenu.TogglePlayBtnIcon();
     }
 
     protected override void _OnRegEvent()
@@ -35,7 +37,6 @@ public class UISaveInput : ManualBehavior
     {
         string inputName = saveNameInputField.text;
 
-        // 存档名称不能为空
         if (string.IsNullOrWhiteSpace(inputName))
         {
             Debug.LogWarning("存档名称不能为空");

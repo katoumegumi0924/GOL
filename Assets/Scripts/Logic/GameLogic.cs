@@ -21,7 +21,7 @@ public class GameLogic
         playerController.Init();
 
         cameraController = new CameraController();
-        cameraController.Init();
+        cameraController.Init(gameData.lifeData);
 
         lifeLogic = new LifeLogic();
         lifeLogic.Init(gameData.lifeData, gameData.lifeTime, playerController);
@@ -67,6 +67,10 @@ public class GameLogic
     public void Update()
     {
         playerController.Update();
+    }
+
+    public void LateUpdate()
+    {
         cameraController.Update();
     }
 

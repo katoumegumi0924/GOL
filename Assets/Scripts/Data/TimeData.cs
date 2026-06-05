@@ -10,7 +10,7 @@ public class TimeData
     // 每秒50帧，singleStepTick单次迭代所需的tick设置为50，当tickDelta为1时1秒迭代一次
     private readonly static int[] tickDeltaSteps = { 1, 2, 10, 20, 50 };
     private int tickDeltaIndex;
-    private bool pausing;
+    public bool pausing;
     public int tickDelta { get { return pausing ? 0 : tickDeltaSteps[tickDeltaIndex]; } }
 
     public void Init()

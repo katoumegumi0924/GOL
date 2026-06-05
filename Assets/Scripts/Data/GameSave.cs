@@ -95,7 +95,7 @@ public static class GameSave
         }
 
         string imgPath = Path.ChangeExtension(path, ".PNG");
-        if (File.Exists(path))
+        if (File.Exists(imgPath))
         {
             File.Delete(imgPath);
         }
