@@ -1,0 +1,5 @@
+#N Golden Head
+#C https://conwaylife.com/wiki/Copperhead
+#C https://www.conwaylife.com/patterns/goldenhead.rle
+x = 10, y = 13, rule = B37/S23
+4b2o$3b4o$4b2o$2b6o$3b4o2$2b2o2b2o$2obo2bob2o$3bo2bo3$4b2o$4b2o!

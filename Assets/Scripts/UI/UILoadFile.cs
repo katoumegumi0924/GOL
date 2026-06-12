@@ -98,7 +98,7 @@ public class UILoadFile : ManualBehavior
     // 获取存档文件
     private FileInfo[] GetAllSaveFiles()
     {
-        DirectoryInfo dir = new DirectoryInfo(Configs.builtin.savePath);
+        DirectoryInfo dir = new DirectoryInfo(GameSave.GetDocumentSavePath());
         if (!dir.Exists)
             dir.Create();
 

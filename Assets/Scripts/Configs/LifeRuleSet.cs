@@ -7,18 +7,34 @@
 public class LifeRuleSet : ScriptableObject
 {
     [SerializeField]
-    private LifeRuleConfig[] lifeaRules;
+    private LifeRule[] lifeRules;
 
-    public LifeRuleConfig GetLifeRule(int index)
+    public LifeRule GetLifeRule(int index)
     {
-        if (index < 0 || index > lifeaRules.Length)
+        if (index < 0 || index > lifeRules.Length)
             return null;
 
-        return lifeaRules[index];
+        return lifeRules[index];
+    }
+
+    public int GetLifeRuleIndex(string ruleString)
+    {
+        if (string.IsNullOrEmpty(ruleString))
+            return -1;
+
+        for (int i = 0; i < lifeRules.Length; ++i)
+        {
+            if (string.Equals(ruleString, lifeRules[i].ruleString, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public int GetLifeRuleLength()
     {
-        return lifeaRules.Length;
+        return lifeRules.Length;
     }
 }

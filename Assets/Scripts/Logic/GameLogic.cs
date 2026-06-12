@@ -23,27 +23,15 @@ public class GameLogic
         cameraController = new CameraController();
         cameraController.Init(gameData.lifeData);
 
-        lifeLogic = new LifeLogic();
-        lifeLogic.Init(gameData.lifeData, gameData.lifeTime, playerController);
-
         timeLogic = new TimeLogic();
-        timeLogic.Init(gameData.lifeTime);
+        timeLogic.Init(gameData.gameTime);
+
+        lifeLogic = new LifeLogic();
+        lifeLogic.Init(gameData.lifeData, gameData.gameTime, playerController);
     }
 
     public void Free()
     {
-        if (playerController != null)
-        {
-            playerController.Free();
-            playerController = null;
-        }
-
-        if (cameraController != null)
-        {
-            cameraController.Free();
-            cameraController = null;
-        }
-
         if (lifeLogic != null)
         {
             lifeLogic.Free();
@@ -56,17 +44,38 @@ public class GameLogic
             timeLogic = null;
         }
 
+        if (cameraController != null)
+        {
+            cameraController.Free();
+            cameraController = null;
+        }
+
+        if (playerController != null)
+        {
+            playerController.Free();
+            playerController = null;
+        }
+
         gameData = null;
     }
 
     public void SetNew()
     {
+        playerController.SetNew();
+        cameraController.SetNew();
+        timeLogic.SetNew();
+        lifeLogic.SetNew();
+    }
 
+    public void AfterImport()
+    {
+        lifeLogic.AfterImport();
     }
 
     public void Update()
     {
         playerController.Update();
+        lifeLogic.Update();
     }
 
     public void LateUpdate()
@@ -76,7 +85,7 @@ public class GameLogic
 
     public void Tick()
     {
-        lifeLogic.Tick();
         timeLogic.Tick();
+        lifeLogic.Tick();
     }
 }

@@ -4,6 +4,7 @@
     {
         _AliveColor ("Alive Color", Color) = (1, 1, 1, 1)
         _DeadColor ("Dead Color", Color) = (0, 0, 0, 1)
+        _PreviewColor ("Preview Color", Color) = (0.5, 0.5, 0.5, 0.5)
         _Thickness ("Grid Thickness", Range(0, 10)) = 4.0
         _GridColor ("Grid Color", Color) = (0.5, 0.5, 0.5, 0.5)
     }
@@ -33,10 +34,12 @@
             };
 
             StructuredBuffer<int> _CellStateBuffer;
+            StructuredBuffer<int> _PreviewBuffer;
             float2 _Res;
 
-            float4 _AliveColor;
+            fixed4 _AliveColor;
             fixed4 _DeadColor;
+            fixed4 _PreviewColor;
 
             float4 _GridColor;
             float _Thickness;
@@ -54,8 +57,10 @@
             {
                 int2 pos = i.uv * _Res;
                 int state = _CellStateBuffer[pos.y * _Res.x + pos.x];
+                int previewState = _PreviewBuffer[pos.y * _Res.x + pos.x];
 
-                fixed4 col = state ? _AliveColor : _DeadColor;
+                fixed4 col = previewState ? _PreviewColor : state ? _AliveColor : _DeadColor;
+                // fixed4 col = state ? _AliveColor : _DeadColor;
 
                 if (_ShowGrid > 0.5)
                 {

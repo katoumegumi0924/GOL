@@ -21,34 +21,35 @@ public class LifeRenderer
         displayRender = dislayObj.GetComponent<MeshRenderer>();
         displayMaterial = displayRender.material;
 
-        displayMaterial.SetVector("_Res", new Vector2(lifeData.resX, lifeData.resY));
+        displayMaterial.SetVector("_Res", new Vector2(lifeData.width, lifeData.height));
     } 
 
     public void Free()
     {
-        lifeData = null;
-        lifeData = null;
-
+        displayMaterial = null;
+        displayRender = null;
         if (dislayObj != null)
         {
             GameObject.Destroy(dislayObj);
             dislayObj = null;
         }
-        displayRender = null;
-        displayMaterial = null;
+
+        lifeLogic = null;
+        lifeData = null;
     }
 
     public void Update()
     {
         displayMaterial.SetBuffer("_CellStateBuffer", lifeLogic.outputBuffer);
+        displayMaterial.SetBuffer("_PreviewBuffer", lifeLogic.previewBuffer);
     }
 
     private GameObject CreateDisplay()
     {
         GameObject dislayObj = GameObject.Instantiate(Configs.builtin.displayObj, Vector3.zero, Quaternion.identity);
 
-        float resX = lifeData.resX;
-        float resY = lifeData.resY;
+        float resX = lifeData.width;
+        float resY = lifeData.height;
 
         float scaleY = 10f;
         float scaleX = scaleY * (resX / resY);

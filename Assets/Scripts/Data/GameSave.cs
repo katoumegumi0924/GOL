@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 /// <summary>
@@ -12,7 +13,7 @@ public static class GameSave
     {
         saveName = VaildFileName(saveName);
 
-        string path = Configs.builtin.savePath + saveName + saveExt;
+        string path = Path.Combine(GetDocumentSavePath(), saveName + saveExt);
         string directory = Path.GetDirectoryName(path);
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
@@ -37,7 +38,7 @@ public static class GameSave
     {
         saveName = VaildFileName(saveName);
 
-        string path = Configs.builtin.savePath + saveName + saveExt;
+        string path = Path.Combine(GetDocumentSavePath(), saveName + saveExt);
 
         // 验证文件是否存在
         if (!File.Exists(path))
@@ -66,8 +67,8 @@ public static class GameSave
 
     public static void SavePreviewImage(string path, int[] cellStates)
     {
-        int resX = GameMain.instance.data.lifeData.resX;
-        int resY = GameMain.instance.data.lifeData.resY;
+        int resX = GameMain.instance.data.lifeData.width;
+        int resY = GameMain.instance.data.lifeData.height;
         var cellBuffer = GameMain.instance.logic.lifeLogic.outputBuffer;
 
         Texture2D tex = new Texture2D(resX, resY, TextureFormat.R8, false);
@@ -165,7 +166,7 @@ public static class GameSave
 
                     if (!isValid)
                     {
-                        Debug.LogError("游戏存档并不合法");
+                        Debug.LogError("游戏存档不合法");
                         return;
                     }
 
@@ -175,7 +176,20 @@ public static class GameSave
         }
         catch(System.Exception ex)
         {
-            Debug.LogError($"保存存档时发生异常: {ex.Message}");
+            Debug.LogError($"加载存档时发生异常: {ex.Message}");
         }
+    }
+
+    public static string GetDocumentSavePath()
+    {
+        string docsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        string fullPath = Path.Combine(docsPath, "GOL");
+        if (!Directory.Exists(fullPath))
+        {
+            Directory.CreateDirectory(fullPath);
+        }
+
+        return fullPath;
     }
 }

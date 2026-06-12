@@ -21,14 +21,14 @@ public class GameModel
 
     public void Free()
     {
-        gameData = null;
-        gameLogic = null;
-
         if (lifeRenderer != null)
         {
             lifeRenderer.Free();
             lifeRenderer = null;
         }
+
+        gameLogic = null;
+        gameData = null;
     }
 
     public void Update()

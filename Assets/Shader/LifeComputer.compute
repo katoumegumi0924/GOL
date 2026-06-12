@@ -1,0 +1,117 @@
+﻿#pragma kernel CSUpdate
+#pragma kernel CSPaint
+#pragma kernel CSDrawTemplate
+#pragma kernel CSDrawPreview
+#pragma kernel CSClearPreview
+
+StructuredBuffer<int> _Input;
+RWStructuredBuffer<int> _Output;
+
+uint _ResX;
+uint _ResY;
+
+uint _SurvivalMask;
+uint _BirthMask;
+
+uint _PaintValue;
+float _PaintPosX;
+float _PaintPosY;
+
+StructuredBuffer<int2> _Template;
+int _TemplateLength;
+
+RWStructuredBuffer<int> _Preview;
+
+[numthreads(8,8,1)]
+void CSUpdate (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _ResX || id.y >= _ResY)
+        return;
+    
+    // 计算周围存活细胞数量
+    int aliveNeighbour = 0;
+    for (int y = -1; y <= 1; ++y)
+    {
+        for (int x = -1; x <= 1; ++x)
+        {
+            if (x == 0 && y == 0)
+                continue;
+            
+            int2 offset = (int2) id.xy + int2(x, y);
+            // 超出边界的部分视为死细胞
+            if (offset.x < 0 || offset.x >= (int)_ResX || offset.y < 0 || offset.y >= (int)_ResY)
+                continue;
+           
+            if (_Input[offset.y * _ResX + offset.x])
+            {
+                aliveNeighbour++;
+            }
+        }
+    }
+
+    int state = 0;
+    int currentState = _Input[id.y * _ResX + id.x];
+    
+    int activeMask = currentState == 1 ? _SurvivalMask : _BirthMask;
+    
+    state = ((activeMask >> aliveNeighbour) & 1);
+    
+    _Output[id.y * _ResX + id.x] = state;
+}
+
+[numthreads(1, 1, 1)]
+void CSPaint(uint3 id : SV_DispatchThreadID)
+{
+    uint2 targetPos = (uint2) floor(float2(_PaintPosX, _PaintPosY) * float2(_ResX, _ResY));
+    
+    if (targetPos.x < _ResX && targetPos.y < _ResX)
+    {
+        _Output[targetPos.y * _ResX + targetPos.x] = _PaintValue;
+    }
+}
+
+[numthreads(64, 1, 1)]
+void CSDrawTemplate(uint3 id : SV_DispatchThreadID)
+{
+    int threadId = (int) id.x;
+    if (threadId >= _TemplateLength)
+        return;
+
+    if (id.x >= (uint) (_ResX * _ResY))
+        return;
+    
+    int2 offset = _Template[threadId];
+    int2 clickPos = (int2) floor(float2(_PaintPosX, _PaintPosY) * float2(_ResX, _ResY));
+    int2 targetPos = clickPos + offset;
+    
+    if (targetPos.x >= 0 && targetPos.x < (int) _ResX && targetPos.y >= 0 && targetPos.y < (int)_ResY)
+    {
+        _Output[targetPos.y * _ResX + targetPos.x] = 1;
+    }
+}
+
+[numthreads(64, 1, 1)]
+void CSDrawPreview(uint3 id : SV_DispatchThreadID)
+{
+    int threadId = (int) id.x;
+    if (threadId >= _TemplateLength)
+        return;
+
+    if (id.x >= (uint) (_ResX * _ResY))
+        return;
+    
+    int2 offset = _Template[threadId];
+    int2 clickPos = (int2) floor(float2(_PaintPosX, _PaintPosY) * float2(_ResX, _ResY));
+    int2 targetPos = clickPos + offset;
+    
+    if (targetPos.x >= 0 && targetPos.x < (int) _ResX && targetPos.y >= 0 && targetPos.y < (int) _ResY)
+    {
+        _Preview[targetPos.y * _ResX + targetPos.x] = 1;
+    }
+}
+
+[numthreads(64, 1, 1)]
+void CSClearPreview(uint3 id : SV_DispatchThreadID)
+{
+    _Preview[id.x] = 0;
+}

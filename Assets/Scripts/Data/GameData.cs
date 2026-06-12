@@ -6,36 +6,42 @@
 public class GameData
 {
     public LifeData lifeData;
-    public TimeData lifeTime;
+    public TimeData gameTime;
+
+    public GameDesc gameDesc;
 
     public void Init()
     {
-        lifeData = new LifeData();
-        lifeData.Init();
+        gameTime = new TimeData();
+        gameTime.Init();
 
-        lifeTime = new TimeData();
-        lifeTime.Init();
+        lifeData = new LifeData();
+        lifeData.Init(this);
+
+        gameDesc = Program.instance.gameDesc;
     }
 
     public void Free()
     {
+        if (gameTime != null)
+        {
+            gameTime.Free();
+            gameTime = null;
+        }
+
         if (lifeData != null)
         {
             lifeData.Free();
             lifeData = null;
         }
 
-        if (lifeTime != null)
-        {
-            lifeTime.Free();
-            lifeTime = null;
-        }
+        gameDesc = null;
     }
 
     public void SetNew()
     {
+        gameTime.SetNew();
         lifeData.SetNew();
-        lifeTime.SetNew();
     }
 
     public void Export(System.IO.BinaryWriter w)
@@ -43,7 +49,8 @@ public class GameData
         w.Write(0);
 
         lifeData.Export(w);
-        lifeTime.Export(w);
+        gameTime.Export(w);
+        gameDesc.Export(w);
     }
 
     public void Import(System.IO.BinaryReader r)
@@ -51,6 +58,7 @@ public class GameData
         int ver = r.ReadInt32();
 
         lifeData.Import(r);
-        lifeTime.Import(r);
+        gameTime.Import(r);
+        gameDesc.Import(r);
     }
 }

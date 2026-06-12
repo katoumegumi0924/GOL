@@ -11,12 +11,12 @@ public class UISaveInput : ManualBehavior
 
     protected override void _OnOpen()
     {
-        GameMain.instance.data.lifeTime.Pause();
+        GameMain.instance.data.gameTime.Pause();
     }
 
     protected override void _OnClose()
     {
-        GameMain.instance.data.lifeTime.Resume();
+        GameMain.instance.data.gameTime.Resume();
     }
 
     protected override void _OnRegEvent()

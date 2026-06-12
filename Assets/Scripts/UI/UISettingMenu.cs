@@ -31,7 +31,7 @@ public class UISettingMenu : ManualBehavior
     // 引用
     [NonSerialized]
     public GameMain gameMain;
-    public TimeData lifeTime;
+    public TimeData gameTime;
     public LifeLogic lifeLogic;
     public LifeRenderer lifeRenderer;
 
@@ -99,20 +99,21 @@ public class UISettingMenu : ManualBehavior
 
     protected override void _OnOpen()
     {
-        lifeTime = gameMain.data.lifeTime;
+        gameTime = gameMain.data.gameTime;
         lifeLogic = gameMain.logic.lifeLogic;
         lifeRenderer = gameMain.model.lifeRenderer;
-
-        lifeTime.OnPauseStateChanged += UpdatePlayBtnIcon;
     }
 
     protected override void _OnClose()
     {
-        lifeTime.OnPauseStateChanged -= UpdatePlayBtnIcon;
-
-        lifeTime = null;
+        gameTime = null;
         lifeLogic = null;
         lifeRenderer = null;
+    }
+
+    protected override void _OnUpdate()
+    {
+        UpdatePlayBtnIcon(gameTime.pausing);
     }
 
     private void OnClickGridButton(int data)
@@ -123,7 +124,7 @@ public class UISettingMenu : ManualBehavior
 
     private void OnClickPlayButton(int data)
     {
-        lifeTime.TogglePause();
+        gameTime.TogglePause();
     }
 
     public void UpdatePlayBtnIcon(bool isPaused)
@@ -142,7 +143,7 @@ public class UISettingMenu : ManualBehavior
 
     private void OnClickStepForwardButton(int data)
     {
-        lifeTime.Pause();
+        gameTime.Pause();
         lifeLogic.LifeTick();
     }
 
@@ -153,14 +154,14 @@ public class UISettingMenu : ManualBehavior
 
     private void OnClickSpeedUpButton(int data)
     {
-        lifeTime.Resume();
-        lifeTime.SpeedUp();
+        gameTime.Resume();
+        gameTime.SpeedUp();
     }
 
     private void OnClickSlowDownButton(int data)
     {
-        lifeTime.Resume();
-        lifeTime.SlowDown();
+        gameTime.Resume();
+        gameTime.SlowDown();
     }
 
     private void OnClickClearButton(int data)

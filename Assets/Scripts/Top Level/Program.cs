@@ -6,17 +6,27 @@
 public class Program : MonoBehaviour
 {
     public static Program instance;
+    public GameDesc gameDesc;
 
     [SerializeField] public GameMain gameMain;
 
     private void OnEnable()
     {
         instance = this;
+
+        gameDesc = new GameDesc();
+        gameDesc.Init();
     }
 
     private void OnDisable()
     {
-        instance = null;   
+        if (gameDesc != null)
+        {
+            gameDesc.Free();
+            gameDesc = null;
+        }
+
+        instance = null;
     }
 
     public void NewGame()
@@ -24,11 +34,7 @@ public class Program : MonoBehaviour
         gameMain.gameObject.SetActive(true);
         gameMain.NewGame();
 
-        UIRoot.instance.uiMainMenu._Close();
-        UIRoot.instance.uiMainMenu._Free();
-
-        UIRoot.instance.uiGame._Init(gameMain);
-        UIRoot.instance.uiGame._Open();
+        UIRoot.instance.OnStartGame();
     }
 
     public void LoadGame(string fileName)
@@ -36,21 +42,13 @@ public class Program : MonoBehaviour
         gameMain.gameObject.SetActive(true);
         gameMain.LoadGame(fileName);
 
-        UIRoot.instance.uiMainMenu._Close();
-        UIRoot.instance.uiMainMenu._Free();
-
-        UIRoot.instance.uiGame._Init(gameMain);
-        UIRoot.instance.uiGame._Open();
+        UIRoot.instance.OnStartGame();
     }
 
     public void EndGame()
     {
         gameMain.gameObject.SetActive(false);
 
-        UIRoot.instance.uiGame._Close();
-        UIRoot.instance.uiGame._Free();
-
-        UIRoot.instance.uiMainMenu._Init(null);
-        UIRoot.instance.uiMainMenu._Open();
+        UIRoot.instance.OnEndGame();
     }
 }

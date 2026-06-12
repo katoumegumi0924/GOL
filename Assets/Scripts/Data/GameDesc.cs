@@ -3,9 +3,37 @@
 /// <summary>
 /// GameDesc：
 /// </summary>
-public static class GameDesc
+public class GameDesc
 {
-    // 默认分辨率为100x100
-    public static int resX = 100;
-    public static int resY = 100;
+    public int resX;
+    public int resY;
+
+    public void Init()
+    {
+        // 默认分辨率为100x100
+        resX = 100;
+        resY = 100;
+    }
+
+    public void Free()
+    {
+        resX = 0;
+        resY = 0;
+    }
+
+    public void Export(System.IO.BinaryWriter w)
+    {
+        w.Write(0);
+
+        w.Write(resX);
+        w.Write(resY);
+    }
+
+    public void Import(System.IO.BinaryReader r)
+    {
+        int ver = r.ReadInt32();
+
+        resX = r.ReadInt32();
+        resY = r.ReadInt32();
+    }
 }

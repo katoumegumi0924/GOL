@@ -17,6 +17,11 @@ public class TimeLogic
         lifeTime = null;
     }
 
+    public void SetNew()
+    {
+
+    }
+
     public void Tick()
     {
         lifeTime.tickCounter += lifeTime.tickDelta;

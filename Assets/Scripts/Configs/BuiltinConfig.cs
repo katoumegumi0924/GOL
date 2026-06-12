@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// BuiltinConfig：
@@ -11,9 +12,6 @@ public class BuiltinConfig : ScriptableObject
 
     [Header("用于显示的Quad预制体")]
     public GameObject displayObj;
-
-    [Header("存档路径")]
-    public string savePath = "F:\\Cases\\GOL\\Save\\";
 
     [Header("默认分辨率")]
     public int resX = 100;

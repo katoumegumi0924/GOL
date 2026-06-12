@@ -36,29 +36,31 @@ public class UINewGameSetting : ManualBehavior
 
     public void OnConfirmBtnClick(int data)
     {
+        var gameDesc = Program.instance.gameDesc;
+
         string widthText = widthInput.text;
         if (string.IsNullOrEmpty(widthText) || string.IsNullOrWhiteSpace(widthText))
         {
-            GameDesc.resX = Configs.builtin.resX;
+            gameDesc.resX = Configs.builtin.resX;
         }
         else
         {
             if (int.TryParse(widthText, out int value))
             {
-                GameDesc.resX = value;
+                gameDesc.resX = value;
             }
         }
 
         string heightText = heightInput.text;
         if (string.IsNullOrEmpty(heightText) || string.IsNullOrWhiteSpace(heightText))
         {
-            GameDesc.resY = Configs.builtin.resY;
+            gameDesc.resY = Configs.builtin.resY;
         }
         else
         {
             if (int.TryParse(heightText, out int value))
             {
-                GameDesc.resY = value;
+                gameDesc.resY = value;
             }
         }
 

@@ -5,26 +5,23 @@
 /// </summary>
 public class PlayerController
 {
-    public Vector2 paintUV;
+    public Vector2 paintPos;
     public int paintValue;
 
     public void Init()
     {
-        // 这种Init,Free,SetNew完全一样的的变量有必要显式的写出来吗
-        paintUV = Vector2.zero;
-        paintValue = 0;
+
     }
 
     public void Free()
     {
-        paintUV = Vector2.zero;
+        paintPos = Vector2.zero;
         paintValue = 0;
     }
 
     public void SetNew()
     {
-        paintUV = Vector2.zero;
-        paintValue = 0;
+
     }
 
     public void Update()
@@ -39,16 +36,16 @@ public class PlayerController
 
         if (leftClick || rightClick)
         {
-            paintUV = GetPaintUV();
+            paintPos = GetPaintPos();
             paintValue = leftClick ? 1 : 0;
         }
         else
         {
-            paintUV = Vector2.negativeInfinity;
+            paintPos = Vector2.negativeInfinity;
         }
     }
 
-    public Vector2 GetPaintUV()
+    public Vector2 GetPaintPos()
     {
         var displayObj = GameMain.instance.model.lifeRenderer.dislayObj;
 

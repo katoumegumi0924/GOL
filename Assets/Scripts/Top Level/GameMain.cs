@@ -16,8 +16,11 @@ public class GameMain : MonoBehaviour
         instance = this;
 
         data = new GameData();
+        data.Init();
         logic = new GameLogic();
+        logic.Init(data);
         model = new GameModel();
+        model.Init(data, logic);
     }
 
     public void Free()
@@ -45,20 +48,14 @@ public class GameMain : MonoBehaviour
 
     public void NewGame()
     {
-        data.Init();
         data.SetNew();
-        logic.Init(data);
         logic.SetNew();
-        model.Init(data, logic);
     }
 
     public void LoadGame(string fileName)
     {
-        data.Init();
         GameSave.LoadGame(fileName, data);
-
-        logic.Init(data);
-        model.Init(data, logic);
+        logic.AfterImport();
     }
 
     private void Update()

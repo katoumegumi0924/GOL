@@ -3,10 +3,11 @@
 /// <summary>
 /// LifeRuleConfig：
 /// </summary>
-[CreateAssetMenu(fileName = "LifeRuleConfig", menuName = "Configs/LifeRule/LifeRuleConfig")]
-public class LifeRuleConfig : ScriptableObject
+[CreateAssetMenu(fileName = "LifeRule", menuName = "Configs/LifeRule/LifeRule")]
+public class LifeRule : ScriptableObject
 {
     public string ruleName;
+    public string ruleString;
     [TextArea] public string ruleDesc;
 
     public bool[] birth = new bool[9];

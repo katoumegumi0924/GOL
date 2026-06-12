@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// CameraController：
@@ -16,7 +17,6 @@ public class CameraController
     private const float ZOOM_SPEED = 2.0f;
     private const float MAX_ZOOM = 10f;
     private const float MIN_ZOOM = 0.1f;
-
 
     public void Init(LifeData _lifeData)
     {
@@ -50,6 +50,9 @@ public class CameraController
 
     private void CameraUpdate()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (Mathf.Abs(scroll) > 0.01f)
         {

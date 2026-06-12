@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56db9e5d5d35105469a11a4283f64382, type: 3}
   m_Name: GPGPU Config
   m_EditorClassIdentifier: 
-  lifeShader: {fileID: 7200000, guid: 07b71710be69e6049b880a22e341c99f, type: 3}
+  lifeComputer: {fileID: 7200000, guid: 07b71710be69e6049b880a22e341c99f, type: 3}

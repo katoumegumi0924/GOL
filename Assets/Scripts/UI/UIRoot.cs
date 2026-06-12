@@ -63,4 +63,22 @@ public class UIRoot : ManualBehavior
         if (uiMainMenu.active)
             uiMainMenu._Update();
     }
+
+    public void OnStartGame()
+    {
+        uiMainMenu._Close();
+        uiMainMenu._Free();
+
+        uiGame._Init(gameMain);
+        uiGame._Open();
+    }
+
+    public void OnEndGame()
+    {
+        uiGame._Close();
+        uiGame._Free();
+
+        uiMainMenu._Init(null);
+        uiMainMenu._Open();
+    }
 }

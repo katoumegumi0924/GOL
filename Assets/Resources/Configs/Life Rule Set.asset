@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0d9e1b902a1b724e83f0ec19bfd68fb, type: 3}
   m_Name: Life Rule Set
   m_EditorClassIdentifier: 
-  lifeaRules:
+  lifeRules:
   - {fileID: 11400000, guid: c705f52563778924a8cf21c218aa59db, type: 2}
   - {fileID: 11400000, guid: 48fd6b8bb857957428b926604c24ca80, type: 2}
   - {fileID: 11400000, guid: f3248ce73c6b590439a5dc511ae6bf88, type: 2}

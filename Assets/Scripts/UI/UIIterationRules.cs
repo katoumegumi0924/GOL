@@ -4,7 +4,7 @@ using System;
 
 public class UIIterationRules : ManualBehavior
 {
-    public Dropdown rulesDropDown;
+    public Dropdown rulesDropdown;
     public Text textDesc;
 
     GameMain gameMain;
@@ -15,7 +15,7 @@ public class UIIterationRules : ManualBehavior
         if (gameMain == null)
             return false;
 
-        rulesDropDown.ClearOptions();
+        rulesDropdown.ClearOptions();
 
         var ruleSet = Configs.ruleSet;
         if (ruleSet == null)
@@ -23,7 +23,7 @@ public class UIIterationRules : ManualBehavior
 
         for (int i = 0; i < ruleSet.GetLifeRuleLength(); ++i)
         {
-            rulesDropDown.options.Add(new Dropdown.OptionData(ruleSet.GetLifeRule(i).ruleName));
+            rulesDropdown.options.Add(new Dropdown.OptionData(ruleSet.GetLifeRule(i).ruleName));
         }
 
         return true;
@@ -31,17 +31,18 @@ public class UIIterationRules : ManualBehavior
 
     protected override void _OnFree()
     {
-        rulesDropDown.ClearOptions();
+        rulesDropdown.ClearOptions();
+        gameMain = null;
     }
 
     protected override void _OnRegEvent()
     {
-        rulesDropDown.onValueChanged.AddListener(OnDropdownValueChanged);
+        rulesDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
     protected override void _OnUnregEvent()
     {
-        rulesDropDown.onValueChanged.RemoveListener(OnDropdownValueChanged);
+        rulesDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
     }
 
     protected override void _OnOpen()
@@ -54,12 +55,20 @@ public class UIIterationRules : ManualBehavior
         
     }
 
+    protected override void _OnUpdate()
+    {
+        if (gameMain?.data?.lifeData == null)
+            return;
+
+        rulesDropdown.value = gameMain.data.lifeData.iterationRuleIndex;
+    }
+
     public void SetData(int ruleIndex)
     {
         // 先设置为-1，避免DropDown默认值与ruleIndex相同时DropDown不刷新的问题
-        rulesDropDown.value = -1;
+        rulesDropdown.value = -1;
 
-        rulesDropDown.value = ruleIndex;
+        rulesDropdown.value = ruleIndex;
     }
 
     private void OnDropdownValueChanged(int index)
