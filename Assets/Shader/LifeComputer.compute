@@ -110,8 +110,11 @@ void CSDrawPreview(uint3 id : SV_DispatchThreadID)
     }
 }
 
-[numthreads(64, 1, 1)]
+[numthreads(8, 8, 1)]
 void CSClearPreview(uint3 id : SV_DispatchThreadID)
 {
-    _Preview[id.x] = 0;
+    if (id.x >= (uint) _ResX || id.y >= (uint) _ResY)
+        return;
+    uint index = _ResX * id.y + id.x;
+    _Preview[index] = 0;
 }

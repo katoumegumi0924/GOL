@@ -80,8 +80,14 @@ public class UIIterationRules : ManualBehavior
 
         var lifeData = gameMain.data.lifeData;
         lifeData.iterationRuleIndex = index;
+
         var lifeLogic = gameMain.logic.lifeLogic;
         lifeLogic.lifeRule = ruleSet.GetLifeRule(lifeData.iterationRuleIndex);
+        lifeLogic.ruleRleDatas = lifeLogic.GetCurRuleRleData(lifeData.iterationRuleIndex);
+
+        var uiLoadTemplate = UIRoot.instance.uiGame.uiLoadTemplate;
+        uiLoadTemplate.SetData(0);
+        uiLoadTemplate.RefreshTemplateList(lifeLogic.ruleRleDatas, lifeData.iterationRuleIndex);
 
         textDesc.text = ruleSet.GetLifeRule(index).ruleDesc;
     }

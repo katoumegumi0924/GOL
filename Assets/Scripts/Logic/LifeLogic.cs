@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -35,6 +36,7 @@ public class LifeLogic
 
     // 模板数据
     public RLEData[] rleDatas;
+    public List<RLEData> ruleRleDatas;
 
     public void Init(LifeData _lifeData, TimeData _lifeTime, PlayerController _playerController)
     {
@@ -56,6 +58,7 @@ public class LifeLogic
         Array.Copy(lifeData.currentCellStates, initialCellStates, initialCellStates.Length);
 
         rleDatas = LifeTemplateUtil.LoadAllTemplateFile();
+        ruleRleDatas = GetCurRuleRleData(lifeData.iterationRuleIndex);
     }
 
     public void Free()
@@ -74,6 +77,15 @@ public class LifeLogic
         lifeRule = null;
         templateIndex = 0;
         initialCellStates = null;
+
+        if (ruleRleDatas != null)
+        {
+            for (int i = 0; i < ruleRleDatas.Count; ++i)
+            {
+                ruleRleDatas[i].Free();
+                ruleRleDatas[i] = null;
+            }
+        }
 
         if (rleDatas != null)
         {
@@ -121,8 +133,9 @@ public class LifeLogic
         outputBuffer.SetData(lifeData.currentCellStates);
 
         lifeRule = Configs.ruleSet.GetLifeRule(lifeData.iterationRuleIndex);
+        ruleRleDatas = GetCurRuleRleData(lifeData.iterationRuleIndex);
         templateIndex = 0;
-
+        
         initialCellStates = new int[lifeData.currentCellStates.Length];
         Array.Copy(lifeData.currentCellStates, initialCellStates, initialCellStates.Length);
 
@@ -139,6 +152,7 @@ public class LifeLogic
         outputBuffer.SetData(lifeData.currentCellStates);
 
         lifeRule = Configs.ruleSet.GetLifeRule(lifeData.iterationRuleIndex);
+        ruleRleDatas = GetCurRuleRleData(lifeData.iterationRuleIndex);
         templateIndex = 0;
 
         initialCellStates = new int[lifeData.currentCellStates.Length];
@@ -266,16 +280,8 @@ public class LifeLogic
 
         if (!float.IsNegativeInfinity(paintPos.x) && templateIndex > 0)
         {
-            var rleData = rleDatas[templateIndex - 1];
+            var rleData = ruleRleDatas[templateIndex - 1];
             var templateData = rleData.cells;
-
-            // 根据模板设置迭代规则
-            var templateRule = Configs.ruleSet.GetLifeRuleIndex(rleData.rule);
-            if (templateRule != -1)
-            {
-                lifeData.iterationRuleIndex = templateRule;
-                lifeRule = Configs.ruleSet.GetLifeRule(templateRule);
-            }
 
             PaintPreview(templateData, paintPos);
 
@@ -359,7 +365,23 @@ public class LifeLogic
     {
         lifeComputer.SetBuffer(clearPreviewKernel, "_Preview", previewBuffer);
 
-        int threadGroups = Mathf.CeilToInt(lifeData.currentCellStates.Length / 64.0f);
-        lifeComputer.Dispatch(clearPreviewKernel, threadGroups, 1, 1);
+        int threadGroupsX = Mathf.CeilToInt(lifeData.width / 8.0f);
+        int threadGroupsY = Mathf.CeilToInt(lifeData.height / 8.0f);
+        lifeComputer.Dispatch(clearPreviewKernel, threadGroupsX, threadGroupsY, 1);
+    }
+
+    public List<RLEData> GetCurRuleRleData(int iterationRuleIndex)
+    {
+        List<RLEData> result = new List<RLEData>();
+        var lifeRuleSet = Configs.ruleSet;
+
+        for (int i = 0; i < rleDatas.Length; ++i)
+        {
+            int templateRuleIndex = lifeRuleSet.GetLifeRuleIndex(rleDatas[i].rule);
+            if (templateRuleIndex == iterationRuleIndex)
+                result.Add(rleDatas[i]);
+        }
+
+        return result;
     }
 }
