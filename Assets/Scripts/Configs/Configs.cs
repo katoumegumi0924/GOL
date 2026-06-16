@@ -42,23 +42,4 @@ public static class Configs
             return _GPGPU;
         }
     }
-
-    private static LifeRuleSet _ruleSet;
-    public static LifeRuleSet ruleSet 
-    {
-        get
-        {
-            if (_ruleSet == null)
-            {
-                _ruleSet = Resources.Load<LifeRuleSet>("Configs/Life Rule Set");
-
-                if (_ruleSet == null)
-                {
-                    Debug.LogError("错误：在 Resources 文件夹下找不到名为 'Life Rule Set' 的配置文件！");
-                }
-            }
-
-            return _ruleSet;
-        }
-    }
 }

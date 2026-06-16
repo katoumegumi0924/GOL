@@ -3,7 +3,7 @@
 /// <summary>
 /// LifeRuleSet：
 /// </summary>
-[CreateAssetMenu(fileName = "LifeRuleSet", menuName = "Configs/LifeRule/LifeRuleSet")]
+[CreateAssetMenu(fileName = "LifeRuleSet", menuName = "Protos/LifeRule/LifeRuleSet")]
 public class LifeRuleSet : ScriptableObject
 {
     [SerializeField]

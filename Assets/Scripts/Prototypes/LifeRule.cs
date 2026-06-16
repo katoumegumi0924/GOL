@@ -3,7 +3,7 @@
 /// <summary>
 /// LifeRuleConfig：
 /// </summary>
-[CreateAssetMenu(fileName = "LifeRule", menuName = "Configs/LifeRule/LifeRule")]
+[CreateAssetMenu(fileName = "LifeRule", menuName = "Protos/LifeRule/LifeRule")]
 public class LifeRule : ScriptableObject
 {
     public string ruleName;

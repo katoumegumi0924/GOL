@@ -17,7 +17,7 @@ public class UIIterationRules : ManualBehavior
 
         rulesDropdown.ClearOptions();
 
-        var ruleSet = Configs.ruleSet;
+        var ruleSet = Protos.ruleSet;
         if (ruleSet == null)
             return false;
 
@@ -73,21 +73,20 @@ public class UIIterationRules : ManualBehavior
 
     private void OnDropdownValueChanged(int index)
     {
-        var ruleSet = Configs.ruleSet;
+        var ruleSet = Protos.ruleSet;
 
         if (ruleSet == null || index < 0 || index >= ruleSet.GetLifeRuleLength())
             return;
 
         var lifeData = gameMain.data.lifeData;
         lifeData.iterationRuleIndex = index;
+        lifeData.ruleRleDatas = lifeData.GetCurRuleRleData(lifeData.iterationRuleIndex);
 
         var lifeLogic = gameMain.logic.lifeLogic;
         lifeLogic.lifeRule = ruleSet.GetLifeRule(lifeData.iterationRuleIndex);
-        lifeLogic.ruleRleDatas = lifeLogic.GetCurRuleRleData(lifeData.iterationRuleIndex);
-
+        
         var uiLoadTemplate = UIRoot.instance.uiGame.uiLoadTemplate;
-        uiLoadTemplate.SetData(0);
-        uiLoadTemplate.RefreshTemplateList(lifeLogic.ruleRleDatas, lifeData.iterationRuleIndex);
+        uiLoadTemplate.RefreshTemplateList(lifeData.ruleRleDatas);
 
         textDesc.text = ruleSet.GetLifeRule(index).ruleDesc;
     }

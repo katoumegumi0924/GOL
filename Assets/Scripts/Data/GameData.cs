@@ -5,9 +5,9 @@
 /// </summary>
 public class GameData
 {
-    public LifeData lifeData;
     public TimeData gameTime;
-
+    public LifeData lifeData;
+    
     public GameDesc gameDesc;
 
     public void Init()
@@ -23,11 +23,7 @@ public class GameData
 
     public void Free()
     {
-        if (gameTime != null)
-        {
-            gameTime.Free();
-            gameTime = null;
-        }
+        gameDesc = null;
 
         if (lifeData != null)
         {
@@ -35,7 +31,11 @@ public class GameData
             lifeData = null;
         }
 
-        gameDesc = null;
+        if (gameTime != null)
+        {
+            gameTime.Free();
+            gameTime = null;
+        }   
     }
 
     public void SetNew()
@@ -48,8 +48,8 @@ public class GameData
     {
         w.Write(0);
 
-        lifeData.Export(w);
         gameTime.Export(w);
+        lifeData.Export(w);
         gameDesc.Export(w);
     }
 
@@ -57,8 +57,8 @@ public class GameData
     {
         int ver = r.ReadInt32();
 
-        lifeData.Import(r);
         gameTime.Import(r);
+        lifeData.Import(r);
         gameDesc.Import(r);
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// LifeData：
@@ -13,6 +14,10 @@ public class LifeData
     public int[] currentCellStates;
     public int iterationRuleIndex;
 
+    // 模板数据
+    public RLEData[] rleDatas;
+    public List<RLEData> ruleRleDatas;
+
     public void Init(GameData _gameData)
     {
         gameData = _gameData;
@@ -22,6 +27,9 @@ public class LifeData
 
         currentCellStates = new int[width * height];
         iterationRuleIndex = 0;
+
+        rleDatas = LifeTemplateUtil.LoadAllTemplateFile();
+        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
     }
 
     public void Free()
@@ -31,6 +39,26 @@ public class LifeData
 
         currentCellStates = null;
         iterationRuleIndex = 0;
+
+        if (ruleRleDatas != null)
+        {
+            for (int i = 0; i < ruleRleDatas.Count; ++i)
+            {
+                ruleRleDatas[i].Free();
+                ruleRleDatas[i] = null;
+            }
+        }
+
+        if (rleDatas != null)
+        {
+            for (int i = 0; i < rleDatas.Length; ++i)
+            {
+                rleDatas[i].Free();
+                rleDatas[i] = null;
+            }
+
+            rleDatas = null;
+        }
 
         gameData = null;
     }
@@ -47,6 +75,7 @@ public class LifeData
         }
 
         iterationRuleIndex = 0;
+        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
     }
 
     public void Export(System.IO.BinaryWriter w)
@@ -81,5 +110,22 @@ public class LifeData
         }
 
         iterationRuleIndex = r.ReadInt32();
+
+        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
+    }
+
+    public List<RLEData> GetCurRuleRleData(int iterationRuleIndex)
+    {
+        List<RLEData> result = new List<RLEData>();
+        var lifeRuleSet = Protos.ruleSet;
+
+        for (int i = 0; i < rleDatas.Length; ++i)
+        {
+            int templateRuleIndex = lifeRuleSet.GetLifeRuleIndex(rleDatas[i].rule);
+            if (templateRuleIndex == iterationRuleIndex)
+                result.Add(rleDatas[i]);
+        }
+
+        return result;
     }
 }
