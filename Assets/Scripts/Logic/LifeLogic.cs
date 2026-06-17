@@ -252,7 +252,7 @@ public class LifeLogic
 
         if (!float.IsNegativeInfinity(paintPos.x) && templateIndex > 0)
         {
-            var rleData = lifeData.ruleRleDatas[templateIndex - 1];
+            var rleData = lifeData.ruleTemplateDatas[templateIndex - 1];
             var templateData = rleData.cells;
 
             PaintPreview(templateData, paintPos);

@@ -9,16 +9,17 @@ using UnityEngine;
 /// </summary>
 public static class LifeTemplateUtil
 {
-    public static RLEData ParseRLE(string filePath)
+    public static TemplateData ParseTxt(string filePath)
     {
         if (!File.Exists(filePath))
         {
             return null;
         }
 
-        RLEData result = new RLEData();
-        result.rule = "B3/S23";
+        TemplateData result = new TemplateData();
+        result.ruleIndex = 0;
         List<Vector2Int> activeCells = new List<Vector2Int>();
+
         string[] lines;
 
         try
@@ -31,137 +32,121 @@ public static class LifeTemplateUtil
             return result;
         }
 
-        string data = "";
-        Regex headerRegex = new Regex(@"x\s*=\s*(\d+)\s*,\s*y\s*=\s*(\d+)(?:\s*,\s*rule\s*=\s*([a-zA-Z0-9/]+))?", RegexOptions.IgnoreCase);
+        Regex ruleRegex = new Regex(@"!\s*rule\s*[:=]?\s*([a-zA-Z0-9/]+)", RegexOptions.IgnoreCase);
 
+        int currentY = 0;
+        int maxWidth = 0;
+        Vector2Int? hotspot = null;
         foreach (string line in lines)
         {
             string trimmedLine = line.Trim();
 
-            if (trimmedLine.StartsWith("#N"))
+            if (trimmedLine.StartsWith("!"))
             {
-                result.name = trimmedLine.Substring(2).Trim();
-                continue;
-            }
-
-            if (line.StartsWith("#"))
-                continue;
-
-            if (line.TrimStart().StartsWith("x", System.StringComparison.OrdinalIgnoreCase))
-            {
-                Match match = headerRegex.Match(line);
-                if (match.Success)
+                Match ruleMatch = ruleRegex.Match(trimmedLine);
+                if (ruleMatch.Success)
                 {
-                    result.width = int.Parse(match.Groups[1].Value);
-                    result.height = int.Parse(match.Groups[2].Value);
-
-                    if (match.Groups[3].Success)
-                    {
-                        result.rule = match.Groups[3].Value;
-                    }
+                    result.ruleIndex = Protos.ruleSet.GetLifeRuleIndex(ruleMatch.Groups[1].Value);
+                    continue;
                 }
+
+                if (trimmedLine.StartsWith("!name:", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    result.name = trimmedLine.Substring(6).Trim();
+                }
+
                 continue;
             }
 
-            data += line;
+            maxWidth = Mathf.Max(maxWidth, trimmedLine.Length);
+
+            for (int x = 0; x < trimmedLine.Length; ++x)
+            {
+                char c = trimmedLine[x];
+
+                if (c == '#')
+                {
+                    hotspot = new Vector2Int(x, currentY);
+                    activeCells.Add(new Vector2Int(x, currentY));
+                }
+                else if (c == 'O' || c == 'o' || c == '*')
+                {
+                    activeCells.Add(new Vector2Int(x, currentY));
+                }
+            }
+
+            currentY++;
         }
 
-        int curX = 0;
-        int curY = 0;
-        int count = 0;
+        if (string.IsNullOrEmpty(result.name))
+            result.name = "未命名模板";
 
-        foreach (char c in data)
-        {
-            if (char.IsDigit(c))
-            {
-                count = count * 10 + (c - '0');
-            }
-            else
-            {
-                int cellCount = count > 0 ? count : 1;
-                if (c == 'o')
-                {
-                    for (int i = 0; i < cellCount; ++i)
-                    {
-                        activeCells.Add(new Vector2Int(curX + i, curY));
-                    }
-                    curX += cellCount;
-                }
-                else if (c == 'b')
-                {
-                    curX += cellCount;
-                }
-                else if (c == '$')
-                {
-                    curY += cellCount;
-                    curX = 0;
-                }
-                else if (c == '!')
-                {
-                    break;
-                }
+        result.width = maxWidth;
+        result.height = currentY;
+        result.cells = TransferCenterToHotspot(activeCells, hotspot);
 
-                count = 0;
-            }
-        }
-
-        result.cells = TransferToCenter(activeCells);
         return result;
     }
 
-    private static Vector2Int[] TransferToCenter(List<Vector2Int> cells)
+    private static Vector2Int[] TransferCenterToHotspot(List<Vector2Int> cells, Vector2Int? hotspot)
     {
         if (cells.Count == 0)
             return new Vector2Int[0];
 
-        int minX = int.MaxValue;
-        int maxX = int.MinValue;
-        int minY = int.MaxValue;
-        int maxY = int.MinValue;
+        int centerX = 0;
+        int centerY = 0;
 
-        foreach (var cell in cells)
+        if (hotspot.HasValue)
         {
-            minX = Mathf.Min(minX, cell.x);
-            maxX = Mathf.Max(maxX, cell.x);
-            minY = Mathf.Min(minY, cell.y);
-            maxY = Mathf.Max(maxY, cell.y);
+            centerX = hotspot.Value.x;
+            centerY = hotspot.Value.y;
         }
-
-        int centerX = (minX + maxX) / 2;
-        int centerY = (minY + maxY) / 2;
+        else
+        {
+            int minX = int.MaxValue, maxX = int.MinValue;
+            int minY = int.MaxValue, maxY = int.MinValue;
+            foreach (var cell in cells)
+            {
+                minX = Mathf.Min(minX, cell.x);
+                maxX = Mathf.Max(maxX, cell.x);
+                minY = Mathf.Min(minY, cell.y);
+                maxY = Mathf.Max(maxY, cell.y);
+            }
+            centerX = (minX + maxX) / 2;
+            centerY = (minY + maxY) / 2;
+        }
 
         Vector2Int[] relativeCenterPos = new Vector2Int[cells.Count];
         for (int i = 0; i < cells.Count; ++i)
         {
-            relativeCenterPos[i] = new Vector2Int(cells[i].x - centerX, cells[i].y - centerY);
+            relativeCenterPos[i] = new Vector2Int(cells[i].x - centerX, centerY - cells[i].y);
         }
 
         return relativeCenterPos;
     }
 
-    public static RLEData[] LoadAllTemplateFile()
+    public static TemplateData[] LoadAllTemplateFile()
     {
         string projectRoot = Directory.GetParent(Application.dataPath).FullName;
         string templatePath = Path.Combine(projectRoot, "Templates");
         DirectoryInfo dir = new DirectoryInfo(templatePath);
-        
+
         if (!dir.Exists)
             dir.Create();
 
-        // 获取以.rle为后缀的存档文件
-        FileInfo[] files = dir.GetFiles("*.rle");
-        RLEData[] rleDatas = new RLEData[files.Length];
+        FileInfo[] files = dir.GetFiles("*.txt");
+        TemplateData[] templateDatas = new TemplateData[files.Length];
         for (int i = 0; i < files.Length; ++i)
         {
-            var rleData = LifeTemplateUtil.ParseRLE(files[i].FullName);
+            var templateData = LifeTemplateUtil.ParseTxt(files[i].FullName);
 
-            if (rleData != null)
+            if (templateData != null)
             {
-                rleDatas[i] = rleData;
+                templateDatas[i] = templateData;
             }
         }
 
-        return rleDatas;
+        return templateDatas;
     }
 
     public static void RotatePattern(Vector2Int[] cellData, float degree)
@@ -179,27 +164,18 @@ public static class LifeTemplateUtil
             cellData[i].y = Mathf.RoundToInt(x * sinTheta + y * cosTheta);
         }
     }
-}
 
-public class RLEData
-{
-    public string name;
-    public int width;
-    public int height;
-    public string rule;
-    public Vector2Int[] cells;
-
-    public void Init()
+    public static List<TemplateData> GetCurRuleRleData(int iterationRuleIndex, TemplateData[] templateDatas)
     {
+        List<TemplateData> result = new List<TemplateData>();
+        var lifeRuleSet = Protos.ruleSet;
 
-    }
+        for (int i = 0; i < templateDatas.Length; ++i)
+        {
+            if (templateDatas[i].ruleIndex == iterationRuleIndex)
+                result.Add(templateDatas[i]);
+        }
 
-    public void Free()
-    {
-        name = null;
-        width = 0;
-        height = 0;
-        rule = null;
-        cells = null;
+        return result;
     }
 }

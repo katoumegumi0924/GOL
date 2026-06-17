@@ -15,8 +15,8 @@ public class LifeData
     public int iterationRuleIndex;
 
     // 模板数据
-    public RLEData[] rleDatas;
-    public List<RLEData> ruleRleDatas;
+    public TemplateData[] templateDatas;
+    public List<TemplateData> ruleTemplateDatas;
 
     public void Init(GameData _gameData)
     {
@@ -28,8 +28,8 @@ public class LifeData
         currentCellStates = new int[width * height];
         iterationRuleIndex = 0;
 
-        rleDatas = LifeTemplateUtil.LoadAllTemplateFile();
-        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
+        templateDatas = LifeTemplateUtil.LoadAllTemplateFile();
+        ruleTemplateDatas = LifeTemplateUtil.GetCurRuleRleData(iterationRuleIndex, templateDatas);
     }
 
     public void Free()
@@ -40,24 +40,24 @@ public class LifeData
         currentCellStates = null;
         iterationRuleIndex = 0;
 
-        if (ruleRleDatas != null)
+        if (ruleTemplateDatas != null)
         {
-            for (int i = 0; i < ruleRleDatas.Count; ++i)
+            for (int i = 0; i < ruleTemplateDatas.Count; ++i)
             {
-                ruleRleDatas[i].Free();
-                ruleRleDatas[i] = null;
+                ruleTemplateDatas[i].Free();
+                ruleTemplateDatas[i] = null;
             }
         }
 
-        if (rleDatas != null)
+        if (templateDatas != null)
         {
-            for (int i = 0; i < rleDatas.Length; ++i)
+            for (int i = 0; i < templateDatas.Length; ++i)
             {
-                rleDatas[i].Free();
-                rleDatas[i] = null;
+                templateDatas[i].Free();
+                templateDatas[i] = null;
             }
 
-            rleDatas = null;
+            templateDatas = null;
         }
 
         gameData = null;
@@ -75,7 +75,7 @@ public class LifeData
         }
 
         iterationRuleIndex = 0;
-        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
+        ruleTemplateDatas = LifeTemplateUtil.GetCurRuleRleData(iterationRuleIndex, templateDatas);
     }
 
     public void Export(System.IO.BinaryWriter w)
@@ -111,21 +111,6 @@ public class LifeData
 
         iterationRuleIndex = r.ReadInt32();
 
-        ruleRleDatas = GetCurRuleRleData(iterationRuleIndex);
-    }
-
-    public List<RLEData> GetCurRuleRleData(int iterationRuleIndex)
-    {
-        List<RLEData> result = new List<RLEData>();
-        var lifeRuleSet = Protos.ruleSet;
-
-        for (int i = 0; i < rleDatas.Length; ++i)
-        {
-            int templateRuleIndex = lifeRuleSet.GetLifeRuleIndex(rleDatas[i].rule);
-            if (templateRuleIndex == iterationRuleIndex)
-                result.Add(rleDatas[i]);
-        }
-
-        return result;
+        ruleTemplateDatas = LifeTemplateUtil.GetCurRuleRleData(iterationRuleIndex, templateDatas);
     }
 }

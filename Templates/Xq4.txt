@@ -1,0 +1,10 @@
+!Name: Xq4
+!Rule: B3678/S34678
+!
+...O
+..OOO
+.OOOOO
+..OOO
+OO.O.OO
+
+...O

@@ -1,0 +1,6 @@
+!Name: Glider
+!Rule: B3/S23
+!
+.O.
+..O
+OOO

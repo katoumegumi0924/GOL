@@ -42,7 +42,7 @@ public class UILoadTemplate : ManualBehavior
     {
         var lifeData = gameMain.data.lifeData;
 
-        RefreshTemplateList(lifeData.ruleRleDatas);
+        RefreshTemplateList(lifeData.ruleTemplateDatas);
     }
 
     protected override void _OnClose()
@@ -62,7 +62,7 @@ public class UILoadTemplate : ManualBehavior
 
         if (lifeLogic.templateIndex > 0)
         {
-            var rleData = lifeData.ruleRleDatas[lifeLogic.templateIndex - 1];
+            var rleData = lifeData.ruleTemplateDatas[lifeLogic.templateIndex - 1];
 
             if (rleData.width > lifeData.width || rleData.height > lifeData.height)
             {
@@ -84,7 +84,7 @@ public class UILoadTemplate : ManualBehavior
 
     public void OnDropdownValueChanged(int index)
     {
-        var rleDatas = gameMain.data.lifeData.ruleRleDatas;
+        var rleDatas = gameMain.data.lifeData.ruleTemplateDatas;
 
         if (rleDatas == null || index < 0 || index > rleDatas.Count)
             return;
@@ -93,14 +93,14 @@ public class UILoadTemplate : ManualBehavior
         lifeLogic.templateIndex = index;
     }
 
-    public void RefreshTemplateList(List<RLEData> rleDatas)
+    public void RefreshTemplateList(List<TemplateData> templateDatas)
     {
         templateDropdown.ClearOptions();
 
         templateDropdown.options.Add(new Dropdown.OptionData("选择模板"));
-        for (int i = 0; i < rleDatas.Count; ++i)
+        for (int i = 0; i < templateDatas.Count; ++i)
         {
-            templateDropdown.options.Add(new Dropdown.OptionData(rleDatas[i].name));
+            templateDropdown.options.Add(new Dropdown.OptionData(templateDatas[i].name));
         }
 
         SetData(0);

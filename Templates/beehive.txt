@@ -1,0 +1,5 @@
+!name: beehive
+!rule: B3/S23
+-**-
+*--*
+-**-

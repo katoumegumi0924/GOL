@@ -1,0 +1,9 @@
+!Name: Cis
+!Rule: B3/S23
+!
+...OO
+..O.O
+.O...
+O....
+.OOO.
+...O

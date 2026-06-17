@@ -1,0 +1,16 @@
+!Name: Golden Head
+!Rule: B37/S23
+!
+....OO
+...OOOO
+....OO
+..OOOOOO
+...OOOO
+
+..OO..OO
+OO.O..O.OO
+...O..O
+
+
+....OO
+....OO

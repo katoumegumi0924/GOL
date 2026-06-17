@@ -1,0 +1,11 @@
+!Name: Wick
+!Rule: b3/s12345
+!
+OO....
+.OOO..
+.O.OO.
+...OOO
+...OO.
+.O.O..
+.OOO..
+OO

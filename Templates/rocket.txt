@@ -1,0 +1,7 @@
+!Name: rocket
+!Rule: B3678/S34678
+OO.OOO
+O.....
+...OO.
+..O..O
+..O...

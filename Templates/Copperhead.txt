@@ -1,0 +1,13 @@
+!Name: Copperhead
+!Rule: B3/S23
+!
+.....O
+.....O
+......O..O
+....OOO.OO.O
+OO......OO.OO
+OO......OO.OO
+....OOO.OO.OO.O...O...O...O
+......O..O....O...O...O...O
+.....O........O...O...O...O
+.....O

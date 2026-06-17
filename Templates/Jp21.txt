@@ -1,0 +1,13 @@
+!Name: Jp21
+!Rule: B3678/S34678
+!
+...O....O
+OOOO.OOOO
+.OOO..OOO
+.OO..O.OOO
+.O.O
+......O.O
+OOO.O..OO
+.OOO..OOO
+.OOOO.OOOO
+.O....O
